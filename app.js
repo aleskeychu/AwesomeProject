@@ -10,7 +10,8 @@ const App = (props) => {
     container,
     text,
     button,
-    buttonText
+    buttonText,
+    mainContent
   } = styles
 
   return (
@@ -18,9 +19,7 @@ const App = (props) => {
       <TextInput style={text} placeholder={"Input query"}>
         Redux Examples
       </TextInput>
-      <Button title={"Search"} onPress={() => props.fetchData()}>
-
-      </Button>
+      <Button title={"Search"} onPress={() => props.fetchData()} />
       <View style={mainContent}>
       {
         props.appData.isFetching && <Text>Loading</Text>
@@ -37,7 +36,7 @@ const App = (props) => {
       }
       </View>
     </View>
-  )
+  );
 }
 
 styles = StyleSheet.create({

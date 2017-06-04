@@ -17,12 +17,11 @@ import App from './app'
 
 const store = configureStore()
 
-const AwesomeProject = () => {
+const AwesomeProject = () => (
   <Provider store={store}>
     <App />
   </Provider>
-}
-
+)
 
 const styles = StyleSheet.create({
   container: {
