@@ -1,7 +1,8 @@
 import React from 'react'
-import { Button, TextInput, TouchableHighlight, View, Text, StyleSheet } from 'react-native'
+import { Button, TextInput, TouchableHighlight, View, Text,
+  ScrollView, Image, StyleSheet, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { fetchData } from './actions'
+import { fetchData, queryChanged, pageForward, pageBackward, openLabel, closeLabel } from './actions'
 
 let styles
 
@@ -14,27 +15,50 @@ const App = (props) => {
     mainContent
   } = styles
 
+  console.log("APP RENDERED")
+  props.appData.data.length > 0 && (
+    console.log("ABOUT TO RENDER SCROLL"),
+    console.log("name: " + props.appData.data[0].artistName)
+  )
   return (
-    <View style={container}>
-      <TextInput style={text} placeholder={"Input query"}>
-        Redux Examples
-      </TextInput>
-      <Button title={"Search"} onPress={() => props.fetchData()} />
-      <View style={mainContent}>
+    <View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}} >
+      <View style={{flex: 0.1, flexDirection: 'row'}}>
+        <TextInput style={{flex: 0.8, borderWidth: 1, height: 40}} placeholder="Input query" onChangeText={(query) => props.queryChanged(query)}/>
+        <Button style={{flex: 0.2}} title="search" onPress={() => props.fetchData(props.appData.query)}/>
+      </View>
+      <ScrollView>
       {
-        props.appData.isFetching && <Text>Loading</Text>
+        props.appData.isFetching ? <Text>Loading</Text> : null
       }
       {
-        props.appData.data.length ? (
-          props.appData.data.map((person, i) => {
-            return (<View key={i}>
-              <Text>Name: {person.name}</Text>
-              <Text>Age: {person.age}</Text>
-            </View>)
-          })
+        props.appData.data.length > 0 ? (
+              props.appData.data
+              .slice(props.appData.page, props.appData.data.length < (props.appData.page + 1) * 10 ? props.appData.data.length : (props.appData.page + 1) * 10)
+              .map((record, i) => {
+                console.log("RENDERING RECORD №" + i)
+                return <View key={props.appData.page * 10 + i}>
+                        <TouchableHighlight onPress={() => props.openLabel(props.appData.page * 10 + i)}>
+                          <View style={{flexDirection: 'row'}}>
+                            <Image source={{uri: record.artworkUrl100}} style={{width: 100, height: 100}} />
+                            <View>
+                                <Text> Artist: {record.artistName}</Text>
+                                <Text> Track: {record.trackName} </Text>
+                            </View>
+                          </View>
+                        </TouchableHighlight>
+                       </View>
+              })
         ) : null
       }
-      </View>
+      </ScrollView>
+      {
+        props.appData.data.lentgh > 0 ? (
+          <View style={{flexDirection: 'row', height: 50}}>
+            <TouchableHighlight title="previous page" color="cornflowerblue" onPress={() => props.pageBackward()}/>
+            <TouchableHighlight title="next page" color="darkcyan" onPress={() => props.pageForward()}/>
+          </View>
+        ) : null
+      }
     </View>
   );
 }
@@ -66,7 +90,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchData: () => dispatch(fetchData())
+    fetchData: (query) => dispatch(fetchData(query)),
+    queryChanged: (query) => dispatch(queryChanged(query)),
+    pageForward: () => dispatch(pageForward()),
+    pageBackward: () => dispatch(pageBackward()),
+    openLabel: (index) => dispatch(openLabel(index)),
+    closeLabel: () => dispatch(closeLabel()),
   }
 }
 

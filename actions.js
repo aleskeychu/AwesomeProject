@@ -1,32 +1,51 @@
-import { FETCHING_DATA, FETCHING_DATA_SUCCESS, FETCHING_DATA_FAILURE } from './constants'
+import { FETCHING_DATA, FETCHING_DATA_SUCCESS,
+         FETCHING_DATA_FAILURE, QUERY_CHANGED,
+         PAGE_FORWARD, PAGE_BACKWARD, OPEN_LABEL,
+         CLOSE_LABEL } from './constants'
+
 import getPeople from './api'
 
-export function getData() {
+export function fetchData(query) {
+  console.log("ACTION FETCH DATA, QUERY: " + query)
   return {
-    type: FETCHING_DATA
+    type: FETCHING_DATA,
+    query: query
   }
 }
 
-export function getDataSuccess(data) {
+export function queryChanged(query) {
+console.log("ACTION QUERY CHANGED")
   return {
-    type: FETCHING_DATA_SUCCESS,
-    data,
+    type: QUERY_CHANGED,
+    query: query
   }
 }
 
-export function getDataFailure() {
+export function pageForward() {
+console.log("ACTION PAGE FORWARD")
   return {
-    type: FETCHING_DATA_FAILURE
+    type: PAGE_FORWARD
   }
 }
 
-export function fetchData() {
-  return (dispatch) => {
-    dispatch(getData())
-    getPeople()
-      .then((data) => {
-        dispatch(getDataSuccess(data))
-      })
-      .catch((err) => console.log('err', err))
+export function pageBackward() {
+  console.log("ACTION PAGE BACKWARD")
+  return {
+    type: PAGE_BACKWARD
+  }
+}
+
+export function openLabel(index) {
+  console.log("ACTION OPEN LABEL INDEX: " + index)
+  return {
+    type: OPEN_LABEL,
+    index
+  }
+}
+
+export function closeLabel(index) {
+  console.log("ACTION CLOSE LABEL")
+  return {
+    type: CLOSE_LABEL,
   }
 }
