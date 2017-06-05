@@ -44,7 +44,7 @@ export default function dataReducer(state = initial_state, action) {
         ...state,
         isFetching: false,
         data: action.data,
-        max_page: Math.ceil(action.data.length / 10),
+        max_page: Math.floor((action.data.length) / 10),
         page: 0
       }
     case FETCHING_DATA_FAILURE:

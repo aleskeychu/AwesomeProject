@@ -43,7 +43,7 @@ export function openLabel(index) {
   }
 }
 
-export function closeLabel(index) {
+export function closeLabel() {
   console.log("ACTION CLOSE LABEL")
   return {
     type: CLOSE_LABEL,
